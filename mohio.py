@@ -37,7 +37,7 @@ bin_whitelist = ["Oxxi1337", "Dons"]
 
 logging.getLogger('http.server').setLevel(logging.CRITICAL + 1)
 
-client = MongoClient("mongodb+srv://mohio:mohio@major-cluster.tbmybs3.mongodb.net/?retryWrites=true&w=majority")
+client = MongoClient("mongodb+srv://frpbypass200466:manutech254@mohio.waerigw.mongodb.net/?retryWrites=true&w=majority")
 userDatabase = client['mohiodb']['users']
 
 def request_handler(req, req_body):
