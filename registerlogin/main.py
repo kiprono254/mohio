@@ -11,7 +11,7 @@ jwt = JWTManager(app)
 
 # can confirm this is random, gotten with a fair rolled dice
 app.config["JWT_SECRET_KEY"] = '#^\x04<\x90\tH^\x83\x05\xa2\x88\xfe8s\xad\x9e_\xd6\x82I\xed\xe4\xdf\xb9\x92\x80\xcc\x8d:\xf0\xe7\xb3|\x16Ssy\xd4\x01\x0b"\x0e;nc\xb1\xbb\xd0\xe1\xd0\\@\x11e\xa3\xbb\xb3\x1b\x83\x99\xde\x8d}'
-client = MongoClient("mongodb+srv://mohio:mohio@major-cluster.tbmybs3.mongodb.net/?retryWrites=true&w=majority")
+client = MongoClient("mongodb+srv://frpbypass200466:manutech254@mohio.waerigw.mongodb.net/?retryWrites=true&w=majority")
 collection = client['mohiodb']['users']
 paymentkeys = client['mohiodb']['paymentkeys']
 
